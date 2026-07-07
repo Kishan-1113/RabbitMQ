@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Consumer {
 
-    private static final Logger log = LoggerFactory.getLogger((Consumer.class));
-
     @RabbitListener(queues = "Listener_queue")
     public void consumer1(String message) {
 
