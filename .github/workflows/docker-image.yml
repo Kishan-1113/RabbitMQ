@@ -45,7 +45,7 @@ jobs:
           docker stop msgapp || true
           docker rm msgapp || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/messageapp:latest
-          docker run -d --name msgapp -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/messageapp:latest
+          docker compose up
 
 
 
