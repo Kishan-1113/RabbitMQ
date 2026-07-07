@@ -42,9 +42,8 @@ jobs:
        username: ${{ secrets.EC2_USER }}
        key: ${{ secrets.SSH_KEY }}
        script: |
-          docker compose down
-          docker compose pull ${{ secrets.DOCKERHUB_USERNAME }}/messageapp:latest
-          docker compose up -d
+          docker compose pull springboot-app
+          docker compose up -d --no-deps --force-recreate springboot-app
 
 
 
