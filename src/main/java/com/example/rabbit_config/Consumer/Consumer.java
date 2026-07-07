@@ -11,7 +11,7 @@ public class Consumer {
     @RabbitListener(queues = "Listener_queue")
     public void consumer1(String message) {
 
-        System.out.println("\nListened message : " + message);
+        System.out.println("\nListening message : " + message);
 
     }
 }
