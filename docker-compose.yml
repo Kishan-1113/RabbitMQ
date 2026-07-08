@@ -11,7 +11,9 @@ services:
       - rabbit-net
 
   springboot-app:
-    image: dockerreached/messageapp # Source of the image to pull from
+    build:
+      context: .
+      dockerfile: Dockerfile # Source of the image to pull from
     container_name: springboot-container
     ports:
       - "8080:8080" # Expose your app to your local machine

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbit_config.Publisher.Publisher;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/queue")
@@ -39,5 +41,15 @@ public class MessageController {
     // public ResponseEntity<?> getMethodName() {
     // return ResponseEntity.ok(consumer.consumer1(null));
     // }
+
+    @GetMapping("/get")
+    public String getMethodName() {
+        return new String("siyvdiskudbkj");
+    }
+
+    @PostMapping("/post")
+    public String postMethodName(@RequestBody String entity) {
+        return entity;
+    }
 
 }
