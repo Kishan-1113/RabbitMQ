@@ -42,9 +42,4 @@ public class EmailController {
 
     }
 
-    @GetMapping("/get")
-    public String getMethodName() {
-        return new String("Hey shaky shaky");
-    }
-
 }

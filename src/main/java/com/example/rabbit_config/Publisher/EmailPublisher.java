@@ -19,8 +19,7 @@ public class EmailPublisher {
     public void publisher1(EmailModel email) {
         rabbitTemplate.convertAndSend(
                 "Email_exchange",
-                "email_routing",
+                routingKey,
                 email);
     }
-
 }
