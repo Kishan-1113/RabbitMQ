@@ -17,9 +17,7 @@ public class MailService {
     }
 
     @Value("${spring.mail.username}")
-    private static String sender;
-    @Value("${spring.mail.password}")
-    private static String password;
+    private String sender;
 
     public void sendSimpleEmail(String to, String subject, String body) {
 
@@ -29,9 +27,9 @@ public class MailService {
         message.setSubject(subject);
         message.setText(body);
 
-        System.out.println("Sender" + sender);
-        System.out.println("password" + password);
-        System.out.println("pass len" + password.length());
+        System.out.println("\n\n====================================\n\n");
+        System.out.println("Sender : " + sender);
+        System.out.println("\n\n====================================\n\n");
 
         mailSender.send(message);
 
@@ -49,9 +47,7 @@ public class MailService {
         message.setText(email.getContent());
 
         System.out.println("\n\n====================================\n\n");
-        System.out.println("Sender" + sender);
-        System.out.println("password" + password);
-        System.out.println("pass len" + password.length());
+        System.out.println("Sender : " + sender);
         System.out.println("\n\n====================================\n\n");
 
         mailSender.send(message);

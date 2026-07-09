@@ -22,8 +22,8 @@ services:
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq # Mentions the service name as host
       - SPRING_RABBITMQ_PORT=5672
-      - MAIL_USERNAME_1="bhadrakishan717@gmail.com"
-      - MAIL_PASSWORD_1="kdplppealfomtaqf"
+      - MAIL_USERNAME_1=${MAIL_USERNAME_1}
+      - MAIL_PASSWORD_1=${MAIL_PASSWORD_1}
     networks:
       - rabbit-net
 
