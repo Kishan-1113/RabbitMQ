@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbit_config.Model.EmailModel;
 import com.example.rabbit_config.Publisher.EmailPublisher;
+import com.example.rabbit_config.Publisher.GeminiPublisher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class EmailController {
 
     private EmailPublisher emailPublisher;
+    private GeminiPublisher gPublisher;
 
-    EmailController(EmailPublisher publisher) {
-        emailPublisher = publisher;
+    EmailController(EmailPublisher publisher, GeminiPublisher publisher2) {
+        this.emailPublisher = publisher;
+        this.gPublisher = publisher2;
     }
 
     private static final Logger log = LoggerFactory.getLogger(EmailController.class);
@@ -41,4 +44,18 @@ public class EmailController {
 
     }
 
+    @PostMapping("/gemini")
+    public ResponseEntity<?> ask_gemini(@RequestBody EmailModel email) {
+
+        try {
+            gPublisher.publishEmail(email);
+            log.info("Email published for reply generation...");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Email published for reply generation");
+
+        } catch (Exception e) {
+            log.error("Error occured while publishing to reply generator queue");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occured publishing to reply generator queue");
+        }
+    }
 }

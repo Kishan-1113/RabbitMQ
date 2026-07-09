@@ -24,6 +24,7 @@ services:
       - SPRING_RABBITMQ_PORT=5672
       - MAIL_USERNAME_1=${MAIL_USERNAME_1}
       - MAIL_PASSWORD_1=${MAIL_PASSWORD_1}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     networks:
       - rabbit-net
 

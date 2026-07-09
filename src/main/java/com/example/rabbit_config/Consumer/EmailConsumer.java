@@ -23,7 +23,7 @@ public class EmailConsumer {
     public void consumer1(EmailModel message) {
 
         try {
-            log.info("\nEmail Listed : " + message.toString());
+            log.info("\nEmail sending to : " + message.getAddress() + "  ....");
             mailService.sendSimpleEmail(message);
             log.info("Email Sent successful");
         } catch (Exception e) {

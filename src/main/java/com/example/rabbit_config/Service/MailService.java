@@ -29,13 +29,11 @@ public class MailService {
 
         System.out.println("\n\n====================================\n\n");
         System.out.println("Sender : " + sender);
+        System.out.println("Receiver : " + to);
         System.out.println("\n\n====================================\n\n");
 
         mailSender.send(message);
 
-        System.out.println("To : " + to);
-        System.out.println("Subject : " + subject);
-        System.out.println("Content : " + body);
     }
 
     public void sendSimpleEmail(EmailModel email) {
@@ -46,14 +44,12 @@ public class MailService {
         message.setSubject(email.getSubject());
         message.setText(email.getContent());
 
-        System.out.println("\n\n====================================\n\n");
+        System.out.println("====================================\n");
         System.out.println("Sender : " + sender);
-        System.out.println("\n\n====================================\n\n");
+        System.out.println("Receiver : " + email.getAddress());
+        System.out.println("\n====================================");
 
         mailSender.send(message);
-
-        System.out.println("To : " + email.getAddress());
-        System.out.println("Subject : " + email.getSubject());
-        System.out.println("Content : " + email.getContent());
     }
+
 }
