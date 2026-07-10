@@ -2,11 +2,15 @@ package com.example.rabbit_config.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import com.example.rabbit_config.Config.MessageHeaders;
 import com.example.rabbit_config.Config.RabbitConfig;
 import com.example.rabbit_config.Model.EmailModel;
+import com.example.rabbit_config.Publisher.DeadLetterPublisher;
 import com.example.rabbit_config.Publisher.EmailPublisher;
 import com.example.rabbit_config.Publisher.GeminiPublisher;
 import com.example.rabbit_config.Service.GeminiService;
@@ -23,30 +27,37 @@ public class GeminiConsumer {
     private final GeminiService gService;
     private final EmailPublisher emailPublisher;
     private final GeminiPublisher geminiPublisher;
+    private DeadLetterPublisher deadLetterPublisher;
 
-    GeminiConsumer(GeminiService service, EmailPublisher emailPublisher, GeminiPublisher geminiPublisher) {
+    GeminiConsumer(GeminiService service, EmailPublisher emailPublisher, GeminiPublisher geminiPublisher,
+            DeadLetterPublisher deadLetterPublisher) {
         this.gService = service;
         this.emailPublisher = emailPublisher;
         this.geminiPublisher = geminiPublisher;
+        this.deadLetterPublisher = deadLetterPublisher;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(EmailConsumer.class);
+    private static final Logger log = LoggerFactory.getLogger(GeminiConsumer.class);
 
     @RabbitListener(queues = RabbitConfig.GEMINI_QUEUE)
-    public void consumer(EmailModel message) {
+    public void consumer(EmailModel email, Message message) {
+
+        MessageProperties props = message.getMessageProperties();
+
+        int retryCount = (Integer) props.getHeaders().getOrDefault(MessageHeaders.RETRY_COUNT, 0);
 
         String prom = "Hello gemini, create a professional email reply for this email body : \n" + "Subject : "
-                + message.getSubject() + "\nBody" + message.getContent()
-                + "\nDo not keep any extra text, just the reply in proper professional tone so that I can directly copy paste the reply";
+                + email.getSubject() + "\nBody" + email.getContent()
+                + "\nDo not keep any extra text, just the reply in proper professional tone, remove any extra overhead lines so that I can directly copy paste the reply";
 
         try {
             log.info("\nGemini Consumer : Email Listed for reply generation... ");
 
             String geminiResponse = gService.getGeminiResponse(prom);
 
-            log.info("Gemini Consumer : Reply Generation successful");
+            log.info("Gemini Consumer : Reply Generated");
 
-            EmailModel newEmail = new EmailModel(message.getAddress(), message.getSubject(), geminiResponse);
+            EmailModel newEmail = new EmailModel(email.getAddress(), email.getSubject(), geminiResponse);
 
             try {
                 emailPublisher.publisher1(newEmail);
@@ -61,10 +72,20 @@ public class GeminiConsumer {
         } catch (Exception e) {
             log.error("Gemini Consumer : Error occured while generating reply");
 
-            geminiPublisher.publishRetryEmail(message);
+            retryCount++;
+            props.setHeader(MessageHeaders.RETRY_COUNT, retryCount);
 
-            log.info("Gemini Consumer : Published to gemini retry queue");
-            e.printStackTrace();
+            if (retryCount < 5) {
+                geminiPublisher.publishRetryEmail(message);
+                log.info("Gemini Consumer : Published to gemini retry queue");
+
+            } else {
+                props.setHeader(MessageHeaders.LAST_ERROR, e.getMessage());
+
+                deadLetterPublisher.publishDeadLetter(message);
+
+                log.info("Gemini Consumer : Published to dead letter queue");
+            }
         }
     }
 

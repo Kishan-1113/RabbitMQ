@@ -22,5 +22,4 @@ public class DeadLetterPublisher {
                 RabbitConfig.DEAD_LETTER_KEY,
                 message);
     }
-
 }
