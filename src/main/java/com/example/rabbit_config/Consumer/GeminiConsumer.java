@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import com.example.rabbit_config.Config.RabbitConfig;
 import com.example.rabbit_config.Model.EmailModel;
 import com.example.rabbit_config.Publisher.EmailPublisher;
+import com.example.rabbit_config.Publisher.GeminiPublisher;
 import com.example.rabbit_config.Service.GeminiService;
 
 @Component
@@ -20,15 +22,17 @@ public class GeminiConsumer {
     /// of sending emails
     private final GeminiService gService;
     private final EmailPublisher emailPublisher;
+    private final GeminiPublisher geminiPublisher;
 
-    GeminiConsumer(GeminiService service, EmailPublisher emailPublisher) {
+    GeminiConsumer(GeminiService service, EmailPublisher emailPublisher, GeminiPublisher geminiPublisher) {
         this.gService = service;
         this.emailPublisher = emailPublisher;
+        this.geminiPublisher = geminiPublisher;
     }
 
     private static final Logger log = LoggerFactory.getLogger(EmailConsumer.class);
 
-    @RabbitListener(queues = "Gemini_queue")
+    @RabbitListener(queues = RabbitConfig.GEMINI_QUEUE)
     public void consumer(EmailModel message) {
 
         String prom = "Hello gemini, create a professional email reply for this email body : \n" + "Subject : "
@@ -36,22 +40,30 @@ public class GeminiConsumer {
                 + "\nDo not keep any extra text, just the reply in proper professional tone so that I can directly copy paste the reply";
 
         try {
-            log.info("\nEmail Listed for reply generation : " + message.toString());
+            log.info("\nGemini Consumer : Email Listed for reply generation... ");
+
             String geminiResponse = gService.getGeminiResponse(prom);
-            log.info("Reply Generation successful");
+
+            log.info("Gemini Consumer : Reply Generation successful");
 
             EmailModel newEmail = new EmailModel(message.getAddress(), message.getSubject(), geminiResponse);
 
             try {
                 emailPublisher.publisher1(newEmail);
-                log.info("Email successfully published for sending");
+
+                log.info("Gemini Consumer : Email successfully published for sending");
+
             } catch (Exception e) {
-                log.error("Error publishing email to sender queue");
+                log.error("Gemini Consumer : Error publishing email to sender queue");
                 e.printStackTrace();
             }
 
         } catch (Exception e) {
-            log.error("Error occured while generating reply");
+            log.error("Gemini Consumer : Error occured while generating reply");
+
+            geminiPublisher.publishRetryEmail(message);
+
+            log.info("Gemini Consumer : Published to gemini retry queue");
             e.printStackTrace();
         }
     }
