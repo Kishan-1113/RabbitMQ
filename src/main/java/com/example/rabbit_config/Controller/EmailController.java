@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/email")
+@RequestMapping("/api/v1/email")
 public class EmailController {
 
     private EmailPublisher emailPublisher;

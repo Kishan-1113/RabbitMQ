@@ -12,9 +12,6 @@ import com.example.rabbit_config.Model.EmailModel;
 @Component
 public class GeminiPublisher {
 
-    private String routingKey = RabbitConfig.GEMINI_ROUTING_KEY;
-    private String routingKeyRetry = RabbitConfig.GEMINI_RETRY_KEY;
-
     private final RabbitTemplate rabbitTemplate;
 
     public GeminiPublisher(RabbitTemplate rabbitTemplate) {
@@ -24,8 +21,8 @@ public class GeminiPublisher {
 
     public void publishEmail(EmailModel email) {
         rabbitTemplate.convertAndSend(
-                "Gemini_exchange",
-                routingKey,
+                RabbitConfig.GEMINI_EXCHANGE,
+                RabbitConfig.GEMINI_KEY,
                 email, message -> {
                     MessageProperties props = message.getMessageProperties();
                     props.setHeader(MessageHeaders.RETRY_COUNT, 0);
@@ -36,8 +33,8 @@ public class GeminiPublisher {
 
     public void publishRetryEmail(Message message) {
         rabbitTemplate.send(
-                "Gemini_exchange",
-                routingKeyRetry,
+                RabbitConfig.GEMINI_EXCHANGE,
+                RabbitConfig.GEMINI_RETRY_KEY,
                 message);
     }
 

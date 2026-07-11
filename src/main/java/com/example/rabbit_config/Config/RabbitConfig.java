@@ -14,16 +14,25 @@ public class RabbitConfig {
     public static final String EMAIL_EXCHANGE = "Email_exchange";
 
     public static final String EMAIL_QUEUE = "Email_queue";
-    public static final String EMAIL_ROUTING_KEY = "email_routing";
+    public static final String EMAIL_KEY = "email_routing";
 
     public static final String EMAIL_RETRY_QUEUE = "Email_Retry_queue";
-    public static final String EMAIL_RETRY_ROUTING_KEY = "email_retry_routing";
+    public static final String EMAIL_RETRY_KEY = "email_retry_routing";
+
+    // Webhook notification routing System
+    public static final String WEBHOOK_EXCHANGE = "Webhook_exchange";
+
+    public static final String WEBHOOK_QUEUE = "Webhook_queue";
+    public static final String WEBHOOK_KEY = "webhook_routing";
+
+    public static final String WEBHOOK_RETRY_QUEUE = "Webhook_Retry_queue";
+    public static final String WEBHOOK_RETRY_KEY = "webhook_retry_routing";
 
     // Gemini System
     public static final String GEMINI_EXCHANGE = "Gemini_exchange";
 
     public static final String GEMINI_QUEUE = "Gemini_queue";
-    public static final String GEMINI_ROUTING_KEY = "gemini_routing";
+    public static final String GEMINI_KEY = "gemini_routing";
 
     public static final String GEMINI_RETRY_QUEUE = "Gemini_Retry_queue";
     public static final String GEMINI_RETRY_KEY = "gemini_retry_routing";
@@ -44,7 +53,7 @@ public class RabbitConfig {
                 .durable(EMAIL_RETRY_QUEUE)
                 .ttl(45000)
                 .deadLetterExchange(EMAIL_EXCHANGE)
-                .deadLetterRoutingKey(EMAIL_ROUTING_KEY)
+                .deadLetterRoutingKey(EMAIL_KEY)
                 .build();
     }
 
@@ -59,7 +68,22 @@ public class RabbitConfig {
                 .durable(GEMINI_RETRY_QUEUE)
                 .ttl(45000)
                 .deadLetterExchange(GEMINI_EXCHANGE)
-                .deadLetterRoutingKey(GEMINI_ROUTING_KEY)
+                .deadLetterRoutingKey(GEMINI_KEY)
+                .build();
+    }
+
+    @Bean
+    public Queue webhookQueue() {
+        return QueueBuilder.durable(WEBHOOK_QUEUE).build();
+    }
+
+    @Bean
+    public Queue webhookRetryQueue() {
+        return QueueBuilder
+                .durable(WEBHOOK_RETRY_QUEUE)
+                .ttl(45000)
+                .deadLetterExchange(WEBHOOK_EXCHANGE)
+                .deadLetterRoutingKey(WEBHOOK_KEY)
                 .build();
     }
 
@@ -81,16 +105,21 @@ public class RabbitConfig {
     }
 
     @Bean
+    public DirectExchange webhookExchange() {
+        return new DirectExchange(WEBHOOK_EXCHANGE);
+    }
+
+    @Bean
     public DirectExchange deadLetterExchange() {
         return new DirectExchange(DEAD_LETTER_EXCNG);
     }
 
     @Bean
-    public Binding emailBinding() {
+    public Binding emailQuBinding() {
         return BindingBuilder
                 .bind(emailQueue())
                 .to(emailExchange())
-                .with(EMAIL_ROUTING_KEY);
+                .with(EMAIL_KEY);
     }
 
     @Bean
@@ -98,15 +127,15 @@ public class RabbitConfig {
         return BindingBuilder
                 .bind(emailRetryQueue())
                 .to(emailExchange())
-                .with(EMAIL_RETRY_ROUTING_KEY);
+                .with(EMAIL_RETRY_KEY);
     }
 
     @Bean
-    public Binding geminiBinding() {
+    public Binding geminiQuBinding() {
         return BindingBuilder
                 .bind(geminiQueue())
                 .to(geminiExchange())
-                .with(GEMINI_ROUTING_KEY);
+                .with(GEMINI_KEY);
     }
 
     @Bean
@@ -115,6 +144,22 @@ public class RabbitConfig {
                 .bind(geminiRetryQueue())
                 .to(geminiExchange())
                 .with(GEMINI_RETRY_KEY);
+    }
+
+    @Bean
+    public Binding webhookQuBinding() {
+        return BindingBuilder
+                .bind(webhookQueue())
+                .to(webhookExchange())
+                .with(WEBHOOK_KEY);
+    }
+
+    @Bean
+    public Binding webhookRetryQuBinding() {
+        return BindingBuilder
+                .bind(webhookRetryQueue())
+                .to(webhookExchange())
+                .with(WEBHOOK_RETRY_KEY);
     }
 
     @Bean

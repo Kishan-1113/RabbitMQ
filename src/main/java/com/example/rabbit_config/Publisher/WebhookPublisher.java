@@ -1,7 +1,5 @@
 package com.example.rabbit_config.Publisher;
 
-import java.util.UUID;
-
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,20 +10,20 @@ import com.example.rabbit_config.Config.RabbitConfig;
 import com.example.rabbit_config.Model.EmailModel;
 
 @Component
-public class EmailPublisher {
+public class WebhookPublisher {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public EmailPublisher(RabbitTemplate rabbitTemplate) {
+    public WebhookPublisher(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+
     }
 
-    public void publisher1(EmailModel email) {
+    public void publishEmail(EmailModel email) {
         rabbitTemplate.convertAndSend(
-                RabbitConfig.EMAIL_EXCHANGE,
-                RabbitConfig.EMAIL_KEY,
-                email,
-                message -> {
+                RabbitConfig.WEBHOOK_EXCHANGE,
+                RabbitConfig.WEBHOOK_KEY,
+                email, message -> {
                     MessageProperties props = message.getMessageProperties();
                     props.setHeader(MessageHeaders.RETRY_COUNT, 0);
 
@@ -33,11 +31,11 @@ public class EmailPublisher {
                 });
     }
 
-    public void publishRetry(Message message) {
-
+    public void publishRetryEmail(Message message) {
         rabbitTemplate.send(
-                RabbitConfig.EMAIL_EXCHANGE,
-                RabbitConfig.EMAIL_RETRY_KEY,
+                RabbitConfig.WEBHOOK_EXCHANGE,
+                RabbitConfig.WEBHOOK_RETRY_KEY,
                 message);
     }
+
 }
