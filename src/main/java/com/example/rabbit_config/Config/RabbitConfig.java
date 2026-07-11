@@ -1,7 +1,5 @@
 package com.example.rabbit_config.Config;
 
-import java.security.PublicKey;
-
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

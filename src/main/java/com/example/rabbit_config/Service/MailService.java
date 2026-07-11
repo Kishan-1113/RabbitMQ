@@ -19,23 +19,6 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-    public void sendSimpleEmail(String to, String subject, String body) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(sender);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-
-        System.out.println("\n\n====================================\n\n");
-        System.out.println("Sender : " + sender);
-        System.out.println("Receiver : " + to);
-        System.out.println("\n\n====================================\n\n");
-
-        mailSender.send(message);
-
-    }
-
     public void sendSimpleEmail(EmailModel email) {
 
         SimpleMailMessage message = new SimpleMailMessage();
