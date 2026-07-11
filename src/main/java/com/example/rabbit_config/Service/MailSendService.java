@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.example.rabbit_config.Model.EmailModel;
 
 @Service
-public class MailService {
+public class MailSendService {
 
     private JavaMailSender mailSender;
 
-    MailService(JavaMailSender mailSender) {
+    MailSendService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 

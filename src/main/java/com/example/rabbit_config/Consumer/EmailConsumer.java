@@ -12,18 +12,18 @@ import com.example.rabbit_config.Config.RabbitConfig;
 import com.example.rabbit_config.Model.EmailModel;
 import com.example.rabbit_config.Publisher.DeadLetterPublisher;
 import com.example.rabbit_config.Publisher.EmailPublisher;
-import com.example.rabbit_config.Service.MailService;
+import com.example.rabbit_config.Service.MailSendService;
 
 @Component
 public class EmailConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(EmailConsumer.class);
 
-    private MailService mailService;
+    private MailSendService mailService;
     private EmailPublisher emailPublisher;
     private DeadLetterPublisher deadLetterPublisher;
 
-    EmailConsumer(MailService service, EmailPublisher emailPublisher, DeadLetterPublisher deadLetterPublisher) {
+    EmailConsumer(MailSendService service, EmailPublisher emailPublisher, DeadLetterPublisher deadLetterPublisher) {
         this.mailService = service;
         this.emailPublisher = emailPublisher;
         this.deadLetterPublisher = deadLetterPublisher;

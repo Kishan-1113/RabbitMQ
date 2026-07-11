@@ -25,6 +25,8 @@ services:
       - MAIL_USERNAME_1=${MAIL_USERNAME_1}
       - MAIL_PASSWORD_1=${MAIL_PASSWORD_1}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
     networks:
       - rabbit-net
 

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
     private final Logger log = LoggerFactory.getLogger(OAuthSuccessHandler.class);
+    public static String ACCESS_TOKEN;
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
@@ -45,7 +46,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        String accessToken = client.getAccessToken().getTokenValue();
+        ACCESS_TOKEN = client.getAccessToken().getTokenValue();
 
         log.info("\n==============================");
         log.info("ACCESS TOKEN");
