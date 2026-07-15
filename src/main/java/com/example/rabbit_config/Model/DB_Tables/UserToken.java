@@ -30,6 +30,6 @@ public class UserToken {
 
     private String lastHistoryId;
 
-    private Long expirationTimeMillis;
+    private long expirationTimeMillis;
 
 }

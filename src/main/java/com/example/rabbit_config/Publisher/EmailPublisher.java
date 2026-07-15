@@ -1,7 +1,5 @@
 package com.example.rabbit_config.Publisher;
 
-import java.util.UUID;
-
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

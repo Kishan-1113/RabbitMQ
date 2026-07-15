@@ -11,34 +11,34 @@ import org.springframework.stereotype.Component;
 @Component
 public class GmailFactory {
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String clientId;
+        @Value("${spring.security.oauth2.client.registration.google.client-id}")
+        private String clientId;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String clientSecret;
+        @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+        private String clientSecret;
 
-    public Gmail getClient(
-            String accessToken,
-            String refreshToken,
-            Long expirationTimeMillis) throws Exception {
+        public Gmail getClient(
+                        String accessToken,
+                        String refreshToken,
+                        long expirationTimeMillis) throws Exception {
 
-        NetHttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
+                NetHttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
 
-        GoogleCredential credential = new GoogleCredential.Builder()
-                .setTransport(transport)
-                .setJsonFactory(GsonFactory.getDefaultInstance())
-                .setClientSecrets(clientId, clientSecret)
-                .build();
+                GoogleCredential credential = new GoogleCredential.Builder()
+                                .setTransport(transport)
+                                .setJsonFactory(GsonFactory.getDefaultInstance())
+                                .setClientSecrets(clientId, clientSecret)
+                                .build();
 
-        credential.setAccessToken(accessToken);
-        credential.setRefreshToken(refreshToken);
-        credential.setExpirationTimeMilliseconds(expirationTimeMillis);
+                credential.setAccessToken(accessToken);
+                credential.setRefreshToken(refreshToken);
+                credential.setExpirationTimeMilliseconds(expirationTimeMillis);
 
-        return new Gmail.Builder(
-                transport,
-                GsonFactory.getDefaultInstance(),
-                credential)
-                .setApplicationName("AI Email Processor")
-                .build();
-    }
+                return new Gmail.Builder(
+                                transport,
+                                GsonFactory.getDefaultInstance(),
+                                credential)
+                                .setApplicationName("AI Email Processor")
+                                .build();
+        }
 }

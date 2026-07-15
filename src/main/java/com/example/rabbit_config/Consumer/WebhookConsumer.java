@@ -81,7 +81,7 @@ public class WebhookConsumer {
 
                 if (previousHistoryId == null) {
 
-                    uService.save(emailAddress, historyId);
+                    uService.saveHistoryId(emailAddress, previousHistoryId);
                     return;
                 }
 
@@ -100,7 +100,7 @@ public class WebhookConsumer {
                     geminiPublisher.publishEmail(email);
                 }
 
-                uService.save(emailAddress, historyId);
+                uService.saveHistoryId(emailAddress, previousHistoryId);
             } else {
                 log.info("\nMessage Already Processed\n");
             }
