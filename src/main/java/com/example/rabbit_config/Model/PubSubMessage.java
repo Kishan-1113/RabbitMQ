@@ -7,9 +7,7 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PubSubMessage {
-
     private String data;
     private String messageId;
     private String publishTime;
-
 }

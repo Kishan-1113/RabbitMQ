@@ -10,6 +10,18 @@ services:
     networks:
       - rabbit-net
 
+  # postgres:
+  # image: postgres:17
+  # container_name: postgres-container
+  # environment:
+  #   POSTGRES_DB: CustomerData
+  #   POSTGRES_USER: postgres
+  #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  # ports:
+  #   - "5432:5432"
+  # networks:
+  #   - rabbit-net
+
   springboot-app:
     build:
       context: .
@@ -27,6 +39,7 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
       - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - rabbit-net
 

@@ -3,12 +3,15 @@ package com.example.rabbit_config.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.rabbit_config.Model.PubSubEnvelope;
 import com.example.rabbit_config.OAuth.OAuthSuccessHandler;
 import com.example.rabbit_config.Publisher.WebhookPublisher;
 import com.example.rabbit_config.Service.GmailService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/v1/webhook")
 public class WebhookController {
 
+    private Logger log = LoggerFactory.getLogger(WebhookController.class);
+
     private WebhookPublisher webhookPublisher;
     private GmailService gmailService;
 
@@ -27,11 +32,11 @@ public class WebhookController {
         this.gmailService = gmailService;
     }
 
+    // Directly publishes the email
     @PostMapping("/incoming-email")
-    public String postMethodName(@RequestBody String entity) {
-        // TODO: process POST request
-
-        return entity;
+    public void postMethodName(@RequestBody PubSubEnvelope entity) {
+        log.info("Message received {} ", entity);
+        webhookPublisher.publishEmail(entity);
     }
 
     @GetMapping("/profile")

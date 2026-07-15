@@ -11,5 +11,4 @@ public class EmailModel {
     private String address;
     private String subject;
     private String content;
-
 }

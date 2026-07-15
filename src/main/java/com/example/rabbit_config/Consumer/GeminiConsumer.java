@@ -2,6 +2,8 @@ package com.example.rabbit_config.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.retry.NonTransientAiException;
+import org.springframework.ai.retry.TransientAiException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -69,8 +71,7 @@ public class GeminiConsumer {
                 e.printStackTrace();
             }
 
-        } catch (Exception e) {
-            log.error("Gemini Consumer : Error occured while generating reply");
+        } catch (TransientAiException e) {
 
             retryCount++;
             props.setHeader(MessageHeaders.RETRY_COUNT, retryCount);
@@ -86,7 +87,9 @@ public class GeminiConsumer {
 
                 log.info("Gemini Consumer : Published to dead letter queue");
             }
+
+        } catch (NonTransientAiException e) {
+            deadLetterPublisher.publishDeadLetter(message);
         }
     }
-
 }

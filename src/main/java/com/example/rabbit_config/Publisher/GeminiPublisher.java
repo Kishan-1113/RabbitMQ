@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.example.rabbit_config.Config.MessageHeaders;
 import com.example.rabbit_config.Config.RabbitConfig;
 import com.example.rabbit_config.Model.EmailModel;
+import com.example.rabbit_config.Model.ReceivedEmail;
 
 @Component
 public class GeminiPublisher {
@@ -17,6 +18,18 @@ public class GeminiPublisher {
     public GeminiPublisher(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
 
+    }
+
+    public void publishEmail(ReceivedEmail email) {
+        rabbitTemplate.convertAndSend(
+                RabbitConfig.GEMINI_EXCHANGE,
+                RabbitConfig.GEMINI_KEY,
+                email, message -> {
+                    MessageProperties props = message.getMessageProperties();
+                    props.setHeader(MessageHeaders.RETRY_COUNT, 0);
+
+                    return message;
+                });
     }
 
     public void publishEmail(EmailModel email) {
