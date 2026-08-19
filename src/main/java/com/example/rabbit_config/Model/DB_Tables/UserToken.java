@@ -23,11 +23,13 @@ public class UserToken {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String accessToken;
 
+    @Column(columnDefinition = "TEXT")
     private String refreshToken;
 
+    @Column(columnDefinition = "TEXT")
     private String lastHistoryId;
 
     private long expirationTimeMillis;

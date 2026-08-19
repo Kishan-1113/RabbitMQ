@@ -44,6 +44,9 @@ public class GmailService {
         UserToken token = userTokenRepo.findByEmail(emailAddress)
                 .orElseThrow(() -> new RuntimeException("User not found in User Token DB Table"));
 
+        // This is a synchronous api call, thread blocking call
+        // use WebClient to handle the http REST calls for async processings
+        // need try catch to handle failures
         Gmail gmail = gmailFactory.getClient(
                 token.getAccessToken(),
                 token.getRefreshToken(),
@@ -69,6 +72,7 @@ public class GmailService {
 
                 String messageId = added.getMessage().getId();
 
+                // Fetching the new message received using the messageID
                 Message message = gmail.users()
                         .messages()
                         .get(emailAddress, messageId)

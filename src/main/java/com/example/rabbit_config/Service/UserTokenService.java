@@ -73,8 +73,8 @@ public class UserTokenService {
             String refreshToken,
             String lastHistoryId, long expirationMillis) {
         try {
-            UserToken user = userTokenRepo.findByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundException("No such user with the email Id"));
+            UserToken user = new UserToken();
+            user.setEmail(email);
             user.setAccessToken(accessToken);
             user.setRefreshToken(refreshToken);
             user.setLastHistoryId(lastHistoryId);

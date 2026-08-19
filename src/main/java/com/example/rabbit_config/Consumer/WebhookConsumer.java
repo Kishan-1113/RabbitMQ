@@ -79,13 +79,16 @@ public class WebhookConsumer {
 
                 String previousHistoryId = uService.getLastHistoryId(emailAddress);
 
-                if (previousHistoryId == null) {
-
-                    uService.saveHistoryId(emailAddress, previousHistoryId);
-                    return;
+                // Decide whichever one to use
+                List<ReceivedEmail> emails;
+                if (previousHistoryId != null) {
+                    emails = gmailService.getNewEmails(emailAddress, previousHistoryId);
+                } else {
+                    emails = gmailService.getNewEmails(emailAddress, historyId);
                 }
 
-                List<ReceivedEmail> emails = gmailService.getNewEmails(emailAddress, previousHistoryId);
+                // Save the recent History ID
+                uService.saveHistoryId(emailAddress, historyId);
 
                 for (ReceivedEmail email : emails) {
 
