@@ -10,8 +10,22 @@ services:
     networks:
       - rabbit-net
 
+  # postgres:
+  # image: postgres:17
+  # container_name: postgres-container
+  # environment:
+  #   POSTGRES_DB: CustomerData
+  #   POSTGRES_USER: postgres
+  #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  # ports:
+  #   - "5432:5432"
+  # networks:
+  #   - rabbit-net
+
   springboot-app:
-    image: dockerreached/messageapp # Source of the image to pull from
+    build:
+      context: .
+      dockerfile: Dockerfile # Source of the image to pull from
     container_name: springboot-container
     ports:
       - "8080:8080" # Expose your app to your local machine
@@ -20,6 +34,12 @@ services:
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq # Mentions the service name as host
       - SPRING_RABBITMQ_PORT=5672
+      - MAIL_USERNAME_1=${MAIL_USERNAME_1}
+      - MAIL_PASSWORD_1=${MAIL_PASSWORD_1}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - rabbit-net
 
